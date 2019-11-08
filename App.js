@@ -1,12 +1,27 @@
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack"
+import React, { Component } from 'react'
+import { AppLoading} from 'expo';
+import * as Font from 'expo-font'
+import Routes from './screens/Routes'
 
-import Home from './screens/Home';
-
-const AppNavigator = createStackNavigator({
-  Home: {
-    screen: Home
+class App extends Component {
+  state = {
+    isFontLoaded: false
   }
-});
 
-export default createAppContainer(AppNavigator);
+  async componentDidMount() {
+    await Font.loadAsync({
+      'dogbyte': require('./assets/fonts/dogbyte.otf'),
+    });
+    this.setState({ isFontLoaded: true })
+  }
+
+  render() {
+    if (!this.state.isFontLoaded) {
+      return <AppLoading />
+    } else {
+      return <Routes />
+    }
+  }
+}
+
+export default App;
