@@ -28,5 +28,16 @@ export default StyleSheet.create({
         height: 45,
         width: 45,
         marginRight: 12.5
+    },
+    leaderboardIcon: {
+        height:50,
+        width: 50,
+        marginRight: 15
+    },
+    leaderboard: {
+        fontSize: 38,
+        fontFamily: 'dogbyte',
+        color: '#ecf0f1',
+        marginTop: 5
     }
 });
