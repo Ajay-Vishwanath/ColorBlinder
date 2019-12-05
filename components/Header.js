@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 
+
 const Header = () => (
     <View style={{ flexDirection: "row" }}>
         <Text style={[styles.header, { color: "#E64C3C" }]}>c</Text>
