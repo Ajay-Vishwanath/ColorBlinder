@@ -30,12 +30,14 @@ export default class Home extends Component {
 
         return (
             <View style={styles.container}>
+                <View style={{ flex: 1 }} />
                 <Header />
                 <TouchableOpacity onPress={this.onPlayPress} style={{ 
                     flexDirection: 'row', 
                     alignItems: 'center',
                     marginTop: 80,
-                    }}>
+                    }}
+                >
                     <Image
                         source={require("../../assets/icons/play_arrow.png")}
                         style={styles.playIcon}
@@ -45,8 +47,9 @@ export default class Home extends Component {
                 <View style={{ 
                     flexDirection: 'row', 
                     alignItems: 'center',
-                    marignTop: 20,
-                    }}>
+                    marginTop: 20,
+                    }}
+                >
                     <Image
                         source={require("../../assets/icons/trophy.png")}
                         style={styles.trophyIcon}
@@ -67,21 +70,24 @@ export default class Home extends Component {
                     />
                     <Text style={styles.leaderboard}>Leaderboard</Text>
                 </TouchableOpacity>
+                <View style={{ flex: 1 }} />
                 <View style={styles.bottomContainer}>
-                    <Text style={[styles.copyrightText, { color: "#E64C3C" }]}>
-                        Music: Komiku
-                    </Text>
-                    <Text style={[styles.copyrightText, { color: "#F1C431" }]}>
-                        SFX: SubspaceAudio
-                    </Text>
-                    <Text style={[styles.copyrightText, { color: "#3998DB" }]}>
-                        Development: RisingStack
-                    </Text>
-                </View>
+                    <View> 
+                        <Text style={[styles.copyrightText, { color: "#E64C3C" }]}>
+                            Music: Komiku
+                        </Text>
+                        <Text style={[styles.copyrightText, { color: "#F1C431" }]}>
+                            SFX: SubspaceAudio
+                        </Text>
+                        <Text style={[styles.copyrightText, { color: "#3998DB" }]}>
+                            Development: RisingStack
+                        </Text>
+                    </View>
                 <View style={{ flex: 1 }} />
                 <TouchableOpacity onPress={this.onToggleSound}>
                     <Image source={imageSource} style={styles.soundIcon} />
                 </TouchableOpacity>
+                </View>
             </View>
         );
     }

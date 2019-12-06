@@ -41,10 +41,9 @@ export default StyleSheet.create({
         marginTop: 5
     },
     bottomContainer: {
-        position: "absolute",
-        left: 15,
-        right: 15,
-        bottom: 12.5 
+        marginBottom: '5%',
+        marginHorizontal: '5%',
+        flexDirection: 'row',
     },
     copyrightText: {
         fontSize: 16,
