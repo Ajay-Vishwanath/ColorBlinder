@@ -5,6 +5,10 @@ import { Header } from '../../components/Header'
 
 export default class Home extends Component {
 
+    state = {
+        isSoundOn: true
+    }
+
     onPlayPress = () => {
         console.log("onPlayPress event handler");
     };
@@ -13,8 +17,17 @@ export default class Home extends Component {
         console.log("onLeadershipPress event handler");
     };
 
+    onToggleSound = () => {
+        this.setState({ isSoundOn: !this.state.isSoundOn })
+    }
+
 
     render() {
+
+        const imageSource = this.state.isSoundOn
+            ? require("../../assets/icons/speaker-on.png")
+            : require("../../assets/icons/speaker-off.png");
+
         return (
             <View style={styles.container}>
                 <Header />
@@ -53,6 +66,21 @@ export default class Home extends Component {
                         style={styles.leaderboardIcon}
                     />
                     <Text style={styles.leaderboard}>Leaderboard</Text>
+                </TouchableOpacity>
+                <View style={styles.bottomContainer}>
+                    <Text style={[styles.copyrightText, { color: "#E64C3C" }]}>
+                        Music: Komiku
+                    </Text>
+                    <Text style={[styles.copyrightText, { color: "#F1C431" }]}>
+                        SFX: SubspaceAudio
+                    </Text>
+                    <Text style={[styles.copyrightText, { color: "#3998DB" }]}>
+                        Development: RisingStack
+                    </Text>
+                </View>
+                <View style={{ flex: 1 }} />
+                <TouchableOpacity onPress={this.onToggleSound}>
+                    <Image source={imageSource} style={styles.soundIcon} />
                 </TouchableOpacity>
             </View>
         );
