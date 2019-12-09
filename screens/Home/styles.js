@@ -14,8 +14,8 @@ export default StyleSheet.create({
         marginTop: 5
     },
     playIcon: {
-        height: 60,
-        width: 60,
+        height: 70,
+        width: 70,
         marginRight: 15
     },
     hiscore: {

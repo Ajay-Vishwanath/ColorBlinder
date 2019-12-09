@@ -10,7 +10,7 @@ export default class Home extends Component {
     }
 
     onPlayPress = () => {
-        console.log("onPlayPress event handler");
+        this.props.navigation.navigate('Game');
     };
 
     onLeadershipPress = () => {

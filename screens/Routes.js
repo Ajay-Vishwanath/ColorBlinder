@@ -8,7 +8,7 @@ const AppNavigator = createStackNavigator(
         Home: {
             screen: Home
         },
-        Gmame: {
+        Game: {
             screen: Game
         }
     },
