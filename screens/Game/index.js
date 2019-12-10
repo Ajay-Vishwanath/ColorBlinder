@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { Header } from "../../components/Header";
 import styles from "./styles";
 import { generateRGB, mutateRGB } from '../../utilities'
@@ -7,15 +7,22 @@ import { generateRGB, mutateRGB } from '../../utilities'
 export default class Game extends Component {
     state = {
         points: 0,
-        timeLeft: 0,
+        timeLeft: 15,
         rgb: generateRGB(),
-        size: 2
+        size: 2,
+        gameState: "PLAYING"
     };
 
     componentWillMount() {
         this.generateNewRound();
         this.interval = setInterval(() => {
-            this.setState(state => ({ timeLeft: state.timeLeft - 1 }));
+            if (this.state.gameState === "PLAYING"){
+                if (this.state.timeLeft === 0){
+                    this.setState({gameState: "LOST"})
+                } else {
+                    this.setState(state => ({ timeLeft: state.timeLeft - 1 }))
+                }
+            }
         }, 1000);
     }
 
@@ -51,12 +58,45 @@ export default class Game extends Component {
         }
     }
 
+    onBottomBarPress = async () => {
+        switch (this.state.gameState) {
+            case 'PLAYING': {
+                this.setState({ gameState: "PAUSED" });
+                break;
+            }
+            case "PAUSED": {
+                this.setState({ gameState: "PLAYING" });
+                break;
+            }
+            case "LOST": {
+                await this.setState({ points: 0, timeLeft: 15, size: 2 });
+                this.generateNewRound();
+                this.setState({
+                    gameState: "PLAYING",
+                })
+                break;
+            }
+        }
+    };
+
+    onExitPress = () => {
+        this.props.navigation.goBack();
+    };
+
     render() {
-        const { rgb, size, diffTileIndex, diffTileColor } = this.state;
+        const { rgb, size, diffTileIndex, diffTileColor, gameState} = this.state;
         const { height } = Dimensions.get("window");
+        const bottomIcon =
+            gameState === "PLAYING"
+                ? require("../../assets/icons/pause.png")
+                : gameState === "PAUSED"
+                    ? require("../../assets/icons/play.png")
+                    : require("../../assets/icons/replay.png");
+
         return (
             <View style={styles.container}>
                 <Header />
+
                 <View
                     style={{
                         height: height / 2.5,
@@ -64,7 +104,7 @@ export default class Game extends Component {
                         flexDirection: "row"
                     }}
                 >
-                    {Array(size)
+                    {gameState === "PLAYING" ? (Array(size)
                         .fill()
                         .map((val, columnIndex) => (
                             <View
@@ -88,8 +128,31 @@ export default class Game extends Component {
                                         />
                                     ))}
                             </View>
-                        ))}
+                        ))) : gameState === "PAUSED" ? (
+                        <View style={styles.pausedContainer}>
+                            <Image
+                                source={require("../../assets/icons/mug.png")}
+                                style={styles.pausedIcon}
+                            />
+                            <Text style={styles.pausedText}>GAME IS PAUSED</Text>
+                        </View>
+                        ) : (
+                            <View style={styles.pausedContainer}>
+                                <Image
+                                    source={require("../../assets/icons/dead.png")}
+                                    style={styles.pausedIcon}
+                                />
+                                <Text style={styles.pausedText}>GAME OVER</Text>
+                                <TouchableOpacity onPress={this.onExitPress}>
+                                    <Image
+                                        source={require("../../assets/icons/escape.png")}
+                                        style={styles.exitIcon}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        )}
                 </View>
+
                 <View style={styles.bottomContainer}>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.counterCount}>
@@ -98,8 +161,17 @@ export default class Game extends Component {
                         <Text style={styles.counterLabel}>
                             Points
                         </Text>
+                        <View style={styles.bestContainer}>
+                            <Image source={require('../../assets/icons/trophy.png')} style={styles.bestIcon} />
+                            <Text style={styles.bestLabel}>
+                                0
+                            </Text>
+                        </View>
                     </View>
                     <View style={{ flex: 1 }}>
+                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={this.onBottomBarPress}>
+                            <Image source={bottomIcon} style={styles.pausedIcon}/>
+                        </TouchableOpacity>
                     </View>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.counterCount}>
@@ -108,6 +180,12 @@ export default class Game extends Component {
                         <Text style={styles.counterLabel}>
                             Seconds left
                         </Text>
+                        <View style={styles.bestContainer}>
+                            <Image source={require('../../assets/icons/clock.png')} style={styles.bestIcon} />
+                            <Text style={styles.bestLabel}>
+                                0
+                            </Text>
+                        </View>
                     </View>
                 </View>
             </View>
