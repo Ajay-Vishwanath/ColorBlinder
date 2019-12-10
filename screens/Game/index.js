@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Header } from "../../components/Header";
 import styles from "./styles";
 import { generateRGB, mutateRGB } from '../../utilities'
@@ -89,6 +89,26 @@ export default class Game extends Component {
                                     ))}
                             </View>
                         ))}
+                </View>
+                <View style={styles.bottomContainer}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={styles.counterCount}>
+                            {this.state.points}
+                        </Text>
+                        <Text style={styles.counterLabel}>
+                            Points
+                        </Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={styles.counterCount}>
+                            {this.state.timeLeft}
+                        </Text>
+                        <Text style={styles.counterLabel}>
+                            Seconds left
+                        </Text>
+                    </View>
                 </View>
             </View>
         );
