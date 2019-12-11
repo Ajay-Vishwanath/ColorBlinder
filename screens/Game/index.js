@@ -178,7 +178,7 @@ export default class Game extends Component {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <Header />
+                    <Header fontSize={50}/>
                 </View>
 
                 <View style={{ flex: 5, justifyContent: 'center' }}>

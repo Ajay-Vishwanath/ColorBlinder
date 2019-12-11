@@ -26,7 +26,7 @@ Header.propTypes = {
 }
 
 Header.defaultProps = {
-    fontSize: 55
+    fontSize: 60
 }
 
 export { Header };
