@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { SafeAreaView, View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
+import { SafeAreaView, Animated, View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { Header } from "../../components/Header";
 import styles from "./styles";
 import { generateRGB, mutateRGB } from '../../utilities'
@@ -12,14 +12,15 @@ export default class Game extends Component {
         rgb: generateRGB(),
         size: 2,
         gameState: "PLAYING",
-        isSoundOn: this.props.navigation.getParam('isSoundOn' || true)
+        isSoundOn: this.props.navigation.getParam('isSoundOn' || true),
+        shakeAnimation: new Animated.Value(0)
     };
 
     async componentWillMount() {
         this.generateNewRound();
         this.interval = setInterval(() => {
             if (this.state.gameState === "PLAYING"){
-                if (this.state.timeLeft === 0){
+                if (this.state.timeLeft <= 0){
                     if (this.state.isSoundOn) this.loseFX.replayAsync();
                     this.backgroundMusic.stopAsync();
                     this.setState({gameState: "LOST"})
@@ -86,7 +87,7 @@ export default class Game extends Component {
     };
 
     onTilePress = (rowIndex, columnIndex) => {
-        const { diffTileIndex, points, timeLeft } = this.state;
+        const { diffTileIndex, points, timeLeft, shakeAnimation } = this.state;
         if (rowIndex == diffTileIndex[0] && columnIndex == diffTileIndex[1]) {
             // good tile
             if (this.state.isSoundOn) this.tileCorrectFX.replayAsync();
@@ -94,6 +95,28 @@ export default class Game extends Component {
             this.generateNewRound();
         } else {
             // wrong tile
+            Animated.sequence([
+                Animated.timing(this.state.shakeAnimation, {
+                    toValue: 50,
+                    duration: 100
+                }),
+                Animated.timing(this.state.shakeAnimation, {
+                    toValue: -50,
+                    duration: 100
+                }),
+                Animated.timing(this.state.shakeAnimation, {
+                    toValue: 50,
+                    duration: 100
+                }),
+                Animated.timing(this.state.shakeAnimation, {
+                    toValue: -50,
+                    duration: 100
+                }),
+                Animated.timing(this.state.shakeAnimation, {
+                    toValue: 0,
+                    duration: 100
+                })
+            ]).start();
             if (this.state.isSoundOn) this.tileWrongFX.replayAsync();
             this.setState({ timeLeft: timeLeft - 1 });
         }
@@ -129,7 +152,7 @@ export default class Game extends Component {
     };
 
     render() {
-        const { rgb, size, diffTileIndex, diffTileColor, gameState} = this.state;
+        const { rgb, size, diffTileIndex, diffTileColor, gameState, shakeAnimation} = this.state;
         const { width } = Dimensions.get("window");
         const bottomIcon =
             gameState === "PLAYING"
@@ -145,11 +168,12 @@ export default class Game extends Component {
                 </View>
 
                 <View style={{ flex: 5, justifyContent: 'center' }}>
-                    <View
+                    <Animated.View
                         style={{
                             height: width * 0.875,
                             width: width * 0.875,
-                            flexDirection: "row"
+                            flexDirection: "row",
+                            left: shakeAnimation
                         }}
                     >
                         {gameState === "PLAYING" ? (Array(size)
@@ -199,7 +223,7 @@ export default class Game extends Component {
                                     </TouchableOpacity>
                                 </View>
                             )}
-                    </View>
+                    </Animated.View>
                 </View>
                 <View style={{ flex: 2 }}>
                     <View style={styles.bottomContainer}>

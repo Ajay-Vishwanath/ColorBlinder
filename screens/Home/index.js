@@ -22,6 +22,13 @@ export default class Home extends Component {
             );
             await this.backgroundMusic.setIsLoopingAsync(true);
             await this.backgroundMusic.playAsync();
+
+            this.willFocusSubscription = this.props.navigation.addListener(
+                'willFocus',
+                () => {
+                    if (this.state.isSoundOn) this.backgroundMusic.playAsync();;
+                }
+            );
             // Your sound is playing!
         } catch (error) {
             // An error occurred!
