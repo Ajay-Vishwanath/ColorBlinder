@@ -2,13 +2,15 @@ import React, { Component } from "react";
 import { SafeAreaView, Animated, View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { Header } from "../../components/Header";
 import styles from "./styles";
-import { generateRGB, mutateRGB } from '../../utilities'
+import { generateRGB, mutateRGB, storeData, retrieveData } from '../../utilities'
 import { Audio } from 'expo-av';
 
 export default class Game extends Component {
     state = {
         points: 0,
         timeLeft: 15,
+        bestPoints: 0,
+        bestTime: 0,
         rgb: generateRGB(),
         size: 2,
         gameState: "PLAYING",
@@ -18,11 +20,23 @@ export default class Game extends Component {
 
     async componentWillMount() {
         this.generateNewRound();
+
+        retrieveData('highScore').then(val => this.setState({ bestPoints: val || 0 }));
+        retrieveData('bestTime').then(val => this.setState({ bestTime: val || 0 }));
+
         this.interval = setInterval(() => {
             if (this.state.gameState === "PLAYING"){
+                if (this.state.timeLeft > this.state.bestTime) {
+                    this.setState(state => ({ bestTime: state.timeLeft }));
+                    storeData('bestTime', this.state.timeLeft);
+                }
                 if (this.state.timeLeft <= 0){
                     if (this.state.isSoundOn) this.loseFX.replayAsync();
                     this.backgroundMusic.stopAsync();
+                    if (this.state.points > this.state.bestPoints) {
+                        this.setState(state => ({ bestPoints: state.points }));
+                        storeData('highScore', this.state.points)
+                    } 
                     this.setState({gameState: "LOST"})
                 } else {
                     this.setState(state => ({ timeLeft: state.timeLeft - 1 }))
@@ -237,7 +251,7 @@ export default class Game extends Component {
                             <View style={styles.bestContainer}>
                                 <Image source={require('../../assets/icons/trophy.png')} style={styles.bestIcon} />
                                 <Text style={styles.bestLabel}>
-                                    0
+                                    {this.state.bestPoints}
                                 </Text>
                             </View>
                         </View>
@@ -256,7 +270,7 @@ export default class Game extends Component {
                             <View style={styles.bestContainer}>
                                 <Image source={require('../../assets/icons/clock.png')} style={styles.bestIcon} />
                                 <Text style={styles.bestLabel}>
-                                    0
+                                    {this.state.bestTime}
                                 </Text>
                             </View>
                         </View>

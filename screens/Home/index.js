@@ -3,14 +3,19 @@ import { Image, Text, View, SafeAreaView, TouchableOpacity } from 'react-native'
 import styles from './styles';
 import { Header } from '../../components/Header'
 import { Audio } from 'expo-av';
+import { storeData, retrieveData } from '../../utilities'
 
 export default class Home extends Component {
 
     state = {
-        isSoundOn: true
+        isSoundOn: true,
+        leaderboardPressed: false,
+        bestPoints: 0,
     }
 
     async componentWillMount() {
+        retrieveData('highScore').then(val => this.setState({ bestPoints: val || 0 }));
+
         this.backgroundMusic = new Audio.Sound();
         this.buttonFX = new Audio.Sound();
         try {
@@ -44,7 +49,7 @@ export default class Home extends Component {
     };
 
     onLeadershipPress = () => {
-        console.log("onLeadershipPress event handler");
+        this.setState({leaderboardPressed: !this.state.leaderboardPressed})
     };
 
     onToggleSound = () => {
@@ -64,6 +69,18 @@ export default class Home extends Component {
         const imageSource = this.state.isSoundOn
             ? require("../../assets/icons/speaker-on.png")
             : require("../../assets/icons/speaker-off.png");
+
+        const leaderBoard = this.state.leaderboardPressed 
+            ? <Text style={styles.leaderboard}>
+                {this.state.bestPoints} 
+            </Text>
+            : <View>
+                <Image
+                source={require("../../assets/icons/leaderboard.png")}
+                style={styles.leaderboardIcon}
+                />
+                <Text style={styles.leaderboard}>Leaderboard</Text>
+            </View>
 
         return (
             <SafeAreaView style={styles.container}>
@@ -91,7 +108,7 @@ export default class Home extends Component {
                         source={require("../../assets/icons/trophy.png")}
                         style={styles.trophyIcon}
                     />
-                    <Text style={styles.hiscore}>Hi-score: 0</Text>
+                    <Text style={styles.hiscore}>Hi-score: {this.state.bestPoints}</Text>
                 </View>
                 <TouchableOpacity
                     onPress={this.onLeadershipPress} 
@@ -101,11 +118,7 @@ export default class Home extends Component {
                         marginTop: 80,
                     }}
                 >
-                    <Image 
-                        source={require("../../assets/icons/leaderboard.png")}
-                        style={styles.leaderboardIcon}
-                    />
-                    <Text style={styles.leaderboard}>Leaderboard</Text>
+                    {leaderBoard}
                 </TouchableOpacity>
                 <View style={{ flex: 1 }} />
                 <View style={styles.bottomContainer}>
