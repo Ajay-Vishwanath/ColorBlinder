@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "ColorBlinder",
+    "description": "Mobile Game developed with React Native. Download Expo to give it a try!",
     "slug": "colorblinder",
     "privacy": "public",
     "sdkVersion": "35.0.0",
