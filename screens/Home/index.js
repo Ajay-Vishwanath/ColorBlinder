@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Image, Text, View, TouchableOpacity } from 'react-native';
+import { Image, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { Header } from '../../components/Header'
+import { Audio } from 'expo-av';
 
 export default class Home extends Component {
 
@@ -9,8 +10,30 @@ export default class Home extends Component {
         isSoundOn: true
     }
 
+    async componentWillMount() {
+        this.backgroundMusic = new Audio.Sound();
+        this.buttonFX = new Audio.Sound();
+        try {
+            await this.backgroundMusic.loadAsync(
+                require("../../assets/music/Komiku_Mushrooms.mp3")
+            );
+            await this.buttonFX.loadAsync(
+                require("../../assets/sfx/button.wav")
+            );
+            await this.backgroundMusic.setIsLoopingAsync(true);
+            await this.backgroundMusic.playAsync();
+            // Your sound is playing!
+        } catch (error) {
+            // An error occurred!
+        }
+    } 
+
     onPlayPress = () => {
-        this.props.navigation.navigate('Game');
+        if (this.state.isSoundOn){
+            this.buttonFX.replayAsync();
+            this.backgroundMusic.stopAsync();
+        } 
+        this.props.navigation.navigate('Game', { isSoundOn: this.state.isSoundOn });
     };
 
     onLeadershipPress = () => {
@@ -19,6 +42,13 @@ export default class Home extends Component {
 
     onToggleSound = () => {
         this.setState({ isSoundOn: !this.state.isSoundOn })
+
+        if (this.state.isSoundOn) {
+            this.backgroundMusic.stopAsync();
+        } else {
+            this.backgroundMusic.setIsLoopingAsync(true);
+            this.backgroundMusic.playAsync();
+        }
     }
 
 
@@ -29,7 +59,7 @@ export default class Home extends Component {
             : require("../../assets/icons/speaker-off.png");
 
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <View style={{ flex: 1 }} />
                 <Header />
                 <TouchableOpacity onPress={this.onPlayPress} style={{ 
@@ -88,7 +118,7 @@ export default class Home extends Component {
                     <Image source={imageSource} style={styles.soundIcon} />
                 </TouchableOpacity>
                 </View>
-            </View>
+            </SafeAreaView>
         );
     }
 }

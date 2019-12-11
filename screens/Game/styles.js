@@ -9,10 +9,14 @@ export default StyleSheet.create({
         alignItems: "center",
     },
     bottomContainer: {
-        width: Dimensions.get("window").height / 2.5,
-        position: 'absolute',
-        bottom: 40,
-        flexDirection: 'row'
+        flex: 1,
+        width: Dimensions.get('window').width * 0.875,
+        flexDirection: 'row',
+    },
+    bottomSectionContainer: {
+        flex: 1,
+        marginTop: 'auto',
+        marginBottom: 'auto',
     },
     counterCount: {
         fontFamily: 'dogbyte',
